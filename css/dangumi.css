@@ -1,0 +1,130 @@
+body
+{
+    background-color : snow;
+}
+
+
+article
+{
+    margin          : 0;
+    background-color: #f9f9f9;
+}
+
+
+ul
+{
+    margin-top   : unset;
+    margin-bottom: unset;
+    margin-left  : 1.8em;
+    margin-right : 1.8em;
+}
+
+
+#license
+{
+    margin:1em;
+    padding:0.5em 1em;
+}
+
+
+.horizontal-section
+{
+    margin-bottom: 40px;
+    padding      : 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow   : 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+.vertical-section
+{
+    width        : 100%;
+    font-family  : "Yu Mincho", "游明朝", "Hiragino Mincho ProN", "ヒラギノ明朝 ProN W3", "serif";
+}
+
+
+.source-content
+{
+    display     : none;
+    writing-mode: vertical-rl;
+    height      : 20em; /* 19文字 + 上下ゆとり */
+}
+
+
+/* 1. 外枠（余白） */
+.vertical-window
+{
+    width: 100%;
+    background-color: #fff;
+    border-right : 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding      : 2em 1em; /* 上下2em、左右1emの余白 */
+    box-sizing   : border-box; /* パディングとボーダーを全体の幅計算に含める必須設定 */
+}
+
+/* 2. 内枠（マスクと計算） */
+.vertical-viewport
+{
+    position: relative;
+    height  : 20em;
+    margin  : 0 auto; /* 外枠の余白のド真ん中に配置 */
+    overflow: hidden; /* 枠外にはみ出たテキストを隠す */
+}
+
+.vertical-content
+{
+    position    : absolute;
+    right       : 0;
+    writing-mode: vertical-rl;
+    height      : 20em;
+}
+
+
+
+/* これらは同じ値を維持する */
+.source-content   p ,
+.vertical-content p
+{
+    margin     : 0em;
+    text-indent: 1em;
+    line-height: 1.8;
+}
+
+.source-content   h1 ,
+.vertical-content h1
+{
+    font-size  : 1.5em;
+    line-height: 1.2;
+    /* 上下の余白（縦書きなら左右の余白）も 1.8 の倍数にする */
+    /* h1のフォントサイズ1.5emに対する 1.2em は、親基準で 1.8em になる */
+    margin     : 0 2.4em;
+}
+
+.source-content   h2 ,
+.vertical-content h2
+{
+    font-size  : 1.5em;
+    line-height: 1.2;
+    /* 上下の余白（縦書きなら左右の余白）も 1.8 の倍数にする */
+    /* h1のフォントサイズ1.5emに対する 1.2em は、親基準で 1.8em になる */
+    margin     : 0 2.4em;
+}
+
+/* 本文は line-height:1.8 を基準グリッドとしている。
+
+ *
+ * 見出しも本文と同じ送り幅（1.8em）になるよう、
+ * 「font-size × line-height = 1.8」となる値にする。
+ *
+ * 例:
+ *   1.5 × 1.2 = 1.8
+ *   1.8 × 1.0 = 1.8
+ *   2.0 × 0.9 = 1.8
+ *
+ *
+ * 例
+ * font-size:1.5em
+ * line-height:1.2  → 1.5×1.2 = 1.8em (=1グリッド)
+ * margin:0 2.4em   → 1.5×2.4 = 3.6em (=2グリッド)
+ */
