@@ -11,19 +11,11 @@ article
 }
 
 
-ul
-{
-    margin-top   : unset;
-    margin-bottom: unset;
-    margin-left  : 1.8em;
-    margin-right : 1.8em;
-}
-
-
 #license
 {
-    margin:1em;
-    padding:0.5em 1em;
+    width  : 30em;
+    margin : 1em;
+    padding: 0.5em 1em;
 }
 
 
@@ -128,3 +120,36 @@ ul
  * line-height:1.2  → 1.5×1.2 = 1.8em (=1グリッド)
  * margin:0 2.4em   → 1.5×2.4 = 3.6em (=2グリッド)
  */
+
+/* リスト（ul, ol, li）の縦書きグリッド調整 */
+.source-content ul ,
+.vertical-content ul ,
+.source-content ol ,
+.vertical-content ol
+{
+    margin             : 0;
+    margin-left        : 1.8em; /* 縦書き時の改行方向（左側）への1行分（1.8em）インデント */
+    padding            : 0;
+    list-style-position: inside; /* マーカーを行内に配置して幅ズレを防止 */
+}
+
+.source-content li ,
+.vertical-content li
+{
+    margin     : 0;
+    padding    : 0;
+    line-height: 1.8; /* 本文と同じ1.8倍の行高を維持 */
+}
+
+/* 強調要素（strong, b, em）の行高・高さズレ防止 */
+.source-content strong ,
+.vertical-content strong ,
+.source-content b ,
+.vertical-content b ,
+.source-content em ,
+.vertical-content em
+{
+    font-weight   : bold;
+    line-height   : inherit; /* 親要素の行高(1.8)を維持 */
+    vertical-align: baseline; /* ベースラインのズレを防止 */
+}

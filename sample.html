@@ -14,7 +14,12 @@
           <p>本文はこんな感じで好きに書いてしまって問題ありません。行頭のインデントや一行あたりの文字数は CSS 部分で調整可能です。</p>
           <p>ご覧のように大文字英数字は縦向きで記載しますが、半角英数字は横向きに記載します。このあたりは一般的な段組みスタイルを踏襲しています。</p>
           <h2>見出し２ H2</h2>
-          <p>HTML タグは自由に利用可能ですが描画部分の処理の都合上（行の幅を）適宜 CSS で調整する必要があります。調整し損なった場合はテキストの折り返し位置で文字列が見切れしてしまいます。</p>
+          <p>HTML タグは自由に利用可能ですが描画部分の処理の都合上（行の幅を）適宜 CSS で調整する必要があります。<strong>太字強調（strong）</strong>やリスト要素（ul/li）もグリッドに沿って調整されています。</p>
+          <ul>
+            <li>リスト項目一：<strong>重要項目</strong>のテスト</li>
+            <li>リスト項目二：行送りと折り返しの確認</li>
+            <li>リスト項目三：長いテキストのリスト項目が縦書きでどのように折り返されグリッドに収まるかのテスト</li>
+          </ul>
           <h2>今後の展望</h2>
           <p>このコードは習作がてらに試作してみたものです。全体的なクオリティはまだまだ低いです。文字列の高さを調整する部分は特に使いづらい箇所かなという自覚があります。</p>
           <p>更新時期は約束できませんが、パラメーターを用いて簡単にデザインを調整できる方向で改修を予定しています。</p>
@@ -45,9 +50,11 @@
     <section>
       <div id="license">
         <p>Copyright (C) 2026 Yosuke-Kawakami</p>
-        <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
-        <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.</p>
-        <p>You should have received a copy of the GNU Affero General Public License along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</p>
+        <small>
+          <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
+          <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.</p>
+          <p>You should have received a copy of the GNU Affero General Public License along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</p>
+        </small>
       </div>
     </section>
   </body>
