@@ -22,10 +22,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const buildLayout = () => {
         renderArea.innerHTML = '';
 
+        // 1. URLから 'c' パラメータを取得
+        const params = new URLSearchParams(window.location.search);
+        const rawChars = parseInt(params.get('c'), 10);
+
+        // 2. ガード処理とデフォルト値の設定
+        // パラメータがない、または数値以外の場合はデフォルトの 20 とする
+        // 破壊的レイアウトを防ぐため、最小10文字〜最大40文字の範囲に制限
+        const charCount = isNaN(rawChars) ? 20 : Math.max(10, Math.min(rawChars, 40));
+
+        // 3. 高さを計算してCSSを動的に上書き
+        const targetHeight  = (charCount) + 'em';
+        source.style.height = targetHeight;
+
         // 全体の横幅を計測
         source.style.display = 'block';
-        const totalWidth = source.scrollWidth;
-        const rawWidth   = renderArea.clientWidth;
+        const totalWidth     = source.scrollWidth;
+        const rawWidth       = renderArea.clientWidth;
         source.style.display = 'none';
 
         if (rawWidth === 0) return;
@@ -59,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const viewportDiv = document.createElement('div');
             viewportDiv.className = 'vertical-viewport';
             viewportDiv.style.width = (contentWidth + 2) + 'px';
+            viewportDiv.style.height = targetHeight;
 
             // 3. テキストを複製し、シフトさせる
             const clone = source.cloneNode(true);
@@ -77,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const body = document.body;
 
         // 描画されたコンテンツの自然な高さを正確に測るため、
-        // 一旦 base.css の grid をJSで上書きして無効化する
+        // 一旦 body の display スタイルを 'block' に変更して無効化する
         body.style.display = 'block';
 
         // ページ全体の高さが、ブラウザの表示領域に収まるか判定する
