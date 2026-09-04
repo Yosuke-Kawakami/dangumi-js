@@ -18,138 +18,136 @@ article
     padding: 0.5em 1em;
 }
 
-
-.horizontal-section
+#render-area
 {
-    margin-bottom: 40px;
-    padding      : 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow   : 0 2px 4px rgba(0,0,0,0.1);
+    border-top : solid 1px #ccc;
 }
 
-
-.vertical-section
+:root
 {
-    width        : 100%;
-    font-family  : "Yu Mincho", "游明朝", "Hiragino Mincho ProN", "ヒラギノ明朝 ProN W3", serif;
+    --bg-color   : snow;
+    --text-color : #111;
+    --font-family: "Yu Mincho", "游明朝", "Hiragino Mincho ProN", "ヒラギノ明朝 ProN W3", serif;
+    --line-height: 1.8;
+    --font-size  : 16px;
+    --tier-height: 20em; /* デフォルト20文字（GETパラメーター 'c' で動的変更可能） */
+    --tier-gap   : 3.6em; /* 段組み間の余白: 1.8 の倍数推奨 */
 }
 
+body, html
+{
+    margin : 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color  : var(--text-color);
+    font-family: var(--font-family);
+    overflow-x : hidden;
+    overflow-y : auto;
+}
 
 .source-content
 {
-    display     : none;
+    display: none;
     writing-mode: vertical-rl;
-    height      : 20em; /* デフォルト20文字（JS側の GETパラメーター 'c' で動的変更可能） */
+    height: var(--tier-height);
 }
 
-
-/* 1. 外枠（余白） */
-.vertical-window
+.source-content p, .vertical-content p
 {
-    width: 100%;
-    background-color: #fff;
-    border-right : 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    padding      : 2em 1em; /* 上下2em、左右1emの余白 */
-    box-sizing   : border-box; /* パディングとボーダーを全体の幅計算に含める必須設定 */
-}
-
-/* 2. 内枠（マスクと計算） */
-.vertical-viewport
-{
-    position: relative;
-    height  : 20em;   /* JS側で動的に上書きされます */
-    margin  : 0 auto; /* 外枠の余白のド真ん中に配置 */
-    overflow: hidden; /* 枠外にはみ出たテキストを隠す */
-}
-
-.vertical-content
-{
-    position    : absolute;
-    right       : 0;
-    writing-mode: vertical-rl;
-    height      : 20em; /* JS側で動的に上書きされます */
-}
-
-
-
-/* これらは同じ値を維持する */
-.source-content   p ,
-.vertical-content p
-{
-    margin     : 0em;
+    margin: 0;
     text-indent: 1em;
-    line-height: 1.8;
+    line-height: var(--line-height);
+    font-size: var(--font-size);
 }
 
-.source-content   h1 ,
-.vertical-content h1
+.source-content h1, .vertical-content h1
 {
     font-size  : 1.5em;
     line-height: 1.2;
-    /* 上下の余白（縦書きなら左右の余白）も 1.8 の倍数にする */
-    /* h1のフォントサイズ1.5emに対する 1.2em は、親基準で 1.8em になる */
     margin     : 0 2.4em;
 }
 
-.source-content   h2 ,
-.vertical-content h2
+.source-content h2, .vertical-content h2
 {
     font-size  : 1.5em;
     line-height: 1.2;
-    /* 上下の余白（縦書きなら左右の余白）も 1.8 の倍数にする */
-    /* h1のフォントサイズ1.5emに対する 1.2em は、親基準で 1.8em になる */
     margin     : 0 2.4em;
 }
 
-/* 本文は line-height:1.8 を基準グリッドとしている。
-
- *
- * 見出しも本文と同じ送り幅（1.8em）になるよう、
- * 「font-size × line-height = 1.8」となる値にする。
- *
- * 例:
- *   1.5 × 1.2 = 1.8
- *   1.8 × 1.0 = 1.8
- *   2.0 × 0.9 = 1.8
- *
- *
- * 例
- * font-size:1.5em
- * line-height:1.2  → 1.5×1.2 = 1.8em (=1グリッド)
- * margin:0 2.4em   → 1.5×2.4 = 3.6em (=2グリッド)
- */
-
-/* リスト（ul, ol, li）の縦書きグリッド調整 */
-.source-content ul ,
-.vertical-content ul ,
-.source-content ol ,
-.vertical-content ol
+.source-content ul , .vertical-content ul ,
+.source-content ol , .vertical-content ol
 {
-    margin             : 0;
-    margin-left        : 1.8em; /* 縦書き時の改行方向（左側）への1行分（1.8em）インデント */
-    padding            : 0;
+    margin  : 0 1.8em; /* 縦書き時の改行方向（左側）への1行分（1.8em）インデント */;
+    padding : 0;
     list-style-position: inside; /* マーカーを行内に配置して幅ズレを防止 */
 }
 
-.source-content li ,
-.vertical-content li
+.source-content li , .vertical-content li
 {
     margin     : 0;
     padding    : 0;
     line-height: 1.8; /* 本文と同じ1.8倍の行高を維持 */
 }
 
-/* 強調要素（strong, b, em）の行高・高さズレ防止 */
-.source-content strong ,
-.vertical-content strong ,
-.source-content b ,
-.vertical-content b ,
-.source-content em ,
-.vertical-content em
+.source-content strong , .vertical-content strong ,
+.source-content b , .vertical-content b ,
+.source-content em , .vertical-content em
 {
     font-weight   : bold;
-    line-height   : inherit; /* 親要素の行高(1.8)を維持 */
+    line-height   : inherit;  /* 親要素の行高(1.8)を維持 */
     vertical-align: baseline; /* ベースラインのズレを防止 */
+}
+
+.vertical-window
+{
+    width : 100vw;
+    height: auto;
+    padding       : 2em 4vw;
+    box-sizing    : border-box;
+    border-bottom : 1px solid #ccc;
+    display       : flex;
+    flex-direction: row-reverse;
+    align-items   : stretch;
+}
+
+.title-block
+{
+    writing-mode: vertical-rl;
+    padding-left: 4vw;
+    display     : flex;
+    align-items : center;
+}
+.title-block h1
+{
+    font-size: 5em;
+    margin   : 0;
+    line-height   : 1;
+    letter-spacing: 0.2em;
+    font-weight   : 900;
+}
+
+.tiers-container
+{
+    flex-grow: 1;
+    display  : flex;
+    flex-direction : column;
+    justify-content: flex-start;
+    gap: var(--tier-gap);
+}
+
+.vertical-viewport
+{
+    position: relative;
+    overflow: hidden;
+    height  : var(--tier-height);
+    margin  : 0 0 0 auto;
+}
+
+.vertical-content
+{
+    position: absolute;
+    top   : 0;
+    right : 0;
+    height: var(--tier-height);
+    writing-mode: vertical-rl;
 }

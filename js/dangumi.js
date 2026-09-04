@@ -16,100 +16,114 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const source     = document.querySelector('.source-content');
-    const renderArea = document.querySelector('.render-area');
+  const urlParams = new URLSearchParams(window.location.search);
+  let charCount = parseInt(urlParams.get('c'), 10);
+  if (isNaN(charCount) || charCount < 10) charCount = 20; 
+  if (charCount > 40) charCount = 40;
 
-    const buildLayout = () => {
-        renderArea.innerHTML = '';
+  document.documentElement.style.setProperty('--tier-height', charCount + 'em');
 
-        // 1. URLから 'c' パラメータを取得
-        const params = new URLSearchParams(window.location.search);
-        const rawChars = parseInt(params.get('c'), 10);
+  const source = document.getElementById('source-content');
+  const renderArea = document.getElementById('render-area');
 
-        // 2. ガード処理とデフォルト値の設定
-        // パラメータがない、または数値以外の場合はデフォルトの 20 とする
-        // 破壊的レイアウトを防ぐため、最小10文字〜最大40文字の範囲に制限
-        const charCount = isNaN(rawChars) ? 20 : Math.max(10, Math.min(rawChars, 40));
+  const buildLayout = () => {
+    renderArea.innerHTML = '';
 
-        // 3. 高さを計算してCSSを動的に上書き
-        const targetHeight  = (charCount) + 'em';
-        source.style.height = targetHeight;
+    const mainTitleEl = document.getElementById('main-title');
+    const mainTitleText = mainTitleEl ? mainTitleEl.innerHTML : '';
+    // -----------------------------------------------------------------------------------
 
-        // 全体の横幅を計測
-        source.style.display = 'block';
-        const totalWidth     = source.scrollWidth;
-        const rawWidth       = renderArea.clientWidth;
-        source.style.display = 'none';
+    source.style.display = 'block';
+    const totalWidth = source.scrollWidth;
 
-        if (rawWidth === 0) return;
+    const pElement = source.querySelector('p');
+    if (!pElement) {
+      source.style.display = 'none';
+      return;
+    }
+    const computedStyle = window.getComputedStyle(pElement);
+    const linePitch = parseFloat(computedStyle.lineHeight);
+    const baseFontSize = parseFloat(computedStyle.fontSize);
+    source.style.display = 'none';
 
-        // 1行の幅（linePitch）と1emのサイズ（fontSize）を取得
-        const pElement      = source.querySelector('p');
-        const computedStyle = window.getComputedStyle(pElement);
-        const linePitch     = parseFloat(computedStyle.lineHeight);
-        const fontSize      = parseFloat(computedStyle.fontSize);
+    if (isNaN(linePitch) || linePitch <= 0) return;
 
-        // 外枠（.vertical-window）のCSSに設定した padding や border を計算から引く
-        // padding は左右 1em ずつ（合計2em分）、border は右 1px
-        const paddingLeftRight = fontSize * 2;
-        const borderWidth      = 1;
-        const availableWidth   = rawWidth - paddingLeftRight - borderWidth;
+    const measureDiv = document.createElement('div');
+    measureDiv.style.position = 'absolute';
+    measureDiv.style.visibility = 'hidden';
+    document.body.appendChild(measureDiv);
 
-        // テキスト表示幅を linePitch の倍数に丸める（端数切り捨て）
-        const contentWidth = Math.floor(availableWidth / linePitch) * linePitch;
+    measureDiv.style.height = 'var(--tier-height)';
+    const tierHeightPx = measureDiv.getBoundingClientRect().height;
 
-        if (contentWidth < linePitch) return; // 画面が狭すぎる場合のガード
+    measureDiv.style.height = 'var(--tier-gap)';
+    const gapPx = measureDiv.getBoundingClientRect().height;
 
-        // 必要なブロック（段）の数を、純粋なコンテンツ幅で計算
-        const numBlocks = Math.ceil(totalWidth / contentWidth);
+    document.body.removeChild(measureDiv);
 
-        for (let i = 0; i < numBlocks; i++) {
-            // 1. 外枠を生成（CSSでスタイルは定義済み）
-            const windowDiv = document.createElement('div');
-            windowDiv.className = 'vertical-window';
+    const paddingPx = baseFontSize * 4; 
+    const viewportHeight = window.innerHeight;
 
-            // 2. 内枠（マスク）を生成し、計算した純粋な幅をセット
-            const viewportDiv = document.createElement('div');
-            viewportDiv.className = 'vertical-viewport';
-            viewportDiv.style.width = (contentWidth + 2) + 'px';
-            viewportDiv.style.height = targetHeight;
+    let numTiers = Math.ceil((viewportHeight - paddingPx) / (tierHeightPx + gapPx));
+    numTiers = Math.max(2, numTiers); 
 
-            // 3. テキストを複製し、シフトさせる
-            const clone = source.cloneNode(true);
-            clone.className = 'vertical-content';
-            clone.style.display = 'block';
+    let currentOffset = 0;
+    let isFirstWindow = true;
+    let sanityGuard = 0;
 
-            // シフト量（translateX）はパディングを含まない contentWidth を使う
-            clone.style.transform = `translateX(${i * contentWidth}px)`;
+    while (currentOffset < totalWidth && sanityGuard < 1000) {
+      sanityGuard++;
 
-            // 段組み
-            viewportDiv.appendChild(clone);
-            windowDiv.appendChild(viewportDiv);
-            renderArea.appendChild(windowDiv);
+      const windowDiv = document.createElement('div');
+      windowDiv.className = 'vertical-window';
+
+      if (isFirstWindow) {
+        if (mainTitleText){
+          const titleBlock = document.createElement('div');
+          titleBlock.className = 'title-block';
+          titleBlock.innerHTML = `<h1>${mainTitleText}</h1>`;
+          windowDiv.appendChild(titleBlock);
         }
+      }
 
-        const body = document.body;
+      const tiersContainer = document.createElement('div');
+      tiersContainer.className = 'tiers-container';
+      windowDiv.appendChild(tiersContainer);
+      
+      renderArea.appendChild(windowDiv);
+      const rawAvailableWidth = tiersContainer.clientWidth;
 
-        // 描画されたコンテンツの自然な高さを正確に測るため、
-        // 一旦 body の display スタイルを 'block' に変更して無効化する
-        body.style.display = 'block';
+      let contentWidth = Math.floor(rawAvailableWidth / linePitch) * linePitch;
+      if (contentWidth < linePitch) contentWidth = linePitch; 
 
-        // ページ全体の高さが、ブラウザの表示領域に収まるか判定する
-        if (document.documentElement.scrollHeight <= window.innerHeight) {
-            // 1画面にピタッと収まる場合は、運用ポリシー通り grid を適用する
-            body.style.display = 'grid';
-        }
-        // はみ出す（スクロールが必要な）場合は 'block' のままにして自然なスクロールに任せる
+      for (let i = 0; i < numTiers; i++) {
+        if (currentOffset >= totalWidth) break; 
 
-    };
+        const viewport = document.createElement('div');
+        viewport.className = 'vertical-viewport';
+        viewport.style.width = contentWidth + 'px';
 
-    // 初回描画
-    buildLayout();
+        const clone = source.cloneNode(true);
+        clone.removeAttribute('id');
+        clone.className = 'vertical-content';
+        clone.style.display = 'block';
+        clone.style.transform = `translateX(${currentOffset}px)`;
 
-    // 画面サイズ変更時のレスポンシブ対応
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(buildLayout, 200);
-    });
+        viewport.appendChild(clone);
+        tiersContainer.appendChild(viewport);
+
+        currentOffset += contentWidth;
+      }
+
+      isFirstWindow = false;
+    }
+  };
+
+  buildLayout();
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(buildLayout, 200);
+  });
 });
