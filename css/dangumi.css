@@ -84,9 +84,10 @@ body, html
 
 .source-content li , .vertical-content li
 {
-    margin     : 0;
-    padding    : 0;
-    line-height: 1.8; /* 本文と同じ1.8倍の行高を維持 */
+    margin      : 0;
+    padding-top : 2em;
+    text-indent : -1.38em;
+    line-height : 1.8; /* 本文と同じ1.8倍の行高を維持 */
 }
 
 .source-content strong , .vertical-content strong ,
@@ -150,4 +151,9 @@ body, html
     right : 0;
     height: var(--tier-height);
     writing-mode: vertical-rl;
+}
+
+.dangumi-strong
+{
+    color : var(--StrongColor);
 }
